@@ -1,10 +1,3 @@
-'''Trains a simple convnet on the MNIST dataset.
-
-Gets to 99.25% test accuracy after 12 epochs
-(there is still a lot of margin for parameter tuning).
-16 seconds per epoch on a GRID K520 GPU.
-'''
-
 from __future__ import print_function
 import keras
 from keras.datasets import mnist
@@ -12,16 +5,23 @@ from keras.models import Sequential
 from keras.layers import Dense, Dropout, Flatten
 from keras.layers import Conv2D, MaxPooling2D
 from keras import backend as K
+from loader import DataFunc
 
 batch_size = 128
 num_classes = 10
 epochs = 12
 
+data_loader = DataFunc()
 # input image dimensions
 img_rows, img_cols = 28, 28
 
 # the data, split between train and test sets
-(x_train, y_train), (x_test, y_test) = mnist.load_data()
+# (x_train, y_train), (x_test, y_test) = mnist.load_data()
+
+x_train = data_loader._load_img("train-images-idx3-ubyte.gz")
+y_train = data_loader._load_label("train-labels-idx1-ubyte.gz")
+x_test = data_loader._load_img("t10k-images-idx3-ubyte.gz")
+y_test = data_loader._load_label("t10k-labels-idx1-ubyte.gz")
 
 if K.image_data_format() == 'channels_first':
     x_train = x_train.reshape(x_train.shape[0], 1, img_rows, img_cols)
